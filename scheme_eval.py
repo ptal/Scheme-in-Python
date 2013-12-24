@@ -82,7 +82,7 @@ def special_form_handler(expr, env):
   exec(expr.cdr.car)
   special_forms[expr.car] = f
 
-def load(expr):
+def load(expr, env):
   """Given a filename, open it and eval each expression in the global_environment"""
   f = open(expr.car, 'r')
   b = Buff(f)

@@ -20,3 +20,8 @@ def f(expr, env):
 def f(expr, env):
   return Procedure(expr.car, expr.cdr, env)
 ")
+
+(define-primitive + "lambda x,y: x+y")
+(define-primitive * "lambda x,y: x*y")
+(define-primitive / "lambda x,y: x/y")
+(define-primitive - "lambda x,y: x-y")

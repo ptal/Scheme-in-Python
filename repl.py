@@ -13,10 +13,12 @@ from scheme_eval import scheme_eval, special_forms, global_environment
 from scheme_types import Pair
 from buffered_input import Buff
 
-special_forms['load'](Pair("syntax.scm", None))
+special_forms['load'](Pair("syntax.scm", None), None)
 
 while True:
+  print '> ',
   inp = scheme_eval(scheme_read(Buff(sys.stdin)), global_environment)
   if inp != None:
     print ';===>', inp
-
+  else:
+    print ''
