@@ -100,7 +100,7 @@ def load(expr, env, cont):
   f = open(expr.car, 'r')
   b = Buff(f)
   while b.peek():
-    scheme_eval(scheme_read(b), env)
+    scheme_eval(scheme_read(b), env, cont)
     b.remove_whitespace()
   f.close()
 
