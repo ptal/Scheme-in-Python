@@ -58,7 +58,7 @@ def scheme_eval(expr, env, cont):
     cont(lookup_symbol_value(expr, env))
   elif type(expr) is Pair:
     if expr.car in special_forms:
-      cont(special_forms[expr.car](expr.cdr, env))
+      special_forms[expr.car](expr.cdr, env, cont)
     else:
       scheme_eval(expr.car, env, 
         lambda x:
@@ -89,12 +89,13 @@ def scheme_apply(proc, args, env, cont):
 ## Builtin Syntax
 ##############################################################################
 
-def special_form_handler(expr, env):
+def special_form_handler(expr, env, cont):
   """Register a symbol with a Python function named "f" that implements a special form"""
   exec(expr.cdr.car)
   special_forms[expr.car] = f
+  cont(None)
 
-def load(expr, env):
+def load(expr, env, cont):
   """Given a filename, open it and eval each expression in the global_environment"""
   f = open(expr.car, 'r')
   b = Buff(f)
