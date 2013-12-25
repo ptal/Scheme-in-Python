@@ -6,7 +6,7 @@ For most code you should import this as:
 from scheme_eval import scheme_eval
 """
 
-from scheme_types import Symbol, Pair, Primitive, the_empty_list, Procedure
+from scheme_types import Symbol, Pair, Primitive, the_empty_list, The_Empty_List, Procedure
 from buffered_input import Buff
 from scheme_read import scheme_read
 
@@ -51,27 +51,39 @@ def self_evaluating(expr):
   t = type(expr)
   return t is int or t is float or t is str or t is bool
 
-def scheme_eval(expr, env):
+def scheme_eval(expr, env, cont):
   if self_evaluating(expr):
-    return expr
+    cont(expr)
   elif type(expr) is Symbol:
-    return lookup_symbol_value(expr, env)
+    cont(lookup_symbol_value(expr, env))
   elif type(expr) is Pair:
     if expr.car in special_forms:
-      return special_forms[expr.car](expr.cdr, env)
+      cont(special_forms[expr.car](expr.cdr, env))
     else:
-      return scheme_apply(scheme_eval(expr.car, env), [scheme_eval(a, env) for a in expr.cdr])
+      scheme_eval(expr.car, env, 
+        lambda x:
+          scheme_apply(x, expr.cdr, env, cont)
+      )
   else:
-    return "scheme_eval: not implemented"
+    cont("scheme_eval: not implemented")
 
-def scheme_apply(proc, args):
-  if type(proc) is Primitive:
-    return apply(proc.fn, args)
-  elif type(proc) is Procedure:
-    new_env = extend_environment(dict(zip(proc.parameters, args)), proc.environment)
-    return [scheme_eval(e,new_env) for e in proc.body][-1]
+def primitive_apply(fn, args, env, cont):
+  if(isinstance(args, The_Empty_List)):
+    cont(fn)
   else:
-    return "Error: Undefined procedure"
+    scheme_eval(args.car, env, 
+      lambda arg:
+        primitive_apply(fn(arg), args.cdr, env, cont)
+    )
+
+def scheme_apply(proc, args, env, cont):
+  if type(proc) is Primitive:
+    primitive_apply(proc.fn, args, env, cont)
+  # elif type(proc) is Procedure:
+    # new_env = extend_environment(dict(zip(proc.parameters, args)), proc.environment)
+    # return [scheme_eval(e,new_env) for e in proc.body][-1]
+  else:
+    cont("Error: Undefined procedure")
 
 ##############################################################################
 ## Builtin Syntax
@@ -87,7 +99,7 @@ def load(expr, env):
   f = open(expr.car, 'r')
   b = Buff(f)
   while b.peek():
-    scheme_eval(scheme_read(b), global_environment)
+    scheme_eval(scheme_read(b), env)
     b.remove_whitespace()
   f.close()
 
