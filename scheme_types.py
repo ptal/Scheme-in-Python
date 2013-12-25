@@ -1,6 +1,6 @@
 """
 scheme_types.py
-(c)2011 Nick Zarczynski
+(c) 2011 Nick Zarczynski
 License: BSD
 """
 

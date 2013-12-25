@@ -1,6 +1,6 @@
 """
 scheme_read.py
-(c)2011 Nick Zarczynski
+(c) 2011 Nick Zarczynski
 License: BSD
 
 For most code you should import this as: 

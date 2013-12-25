@@ -1,6 +1,7 @@
 """
 scheme_eval.py
-(c)2011 Nick Zarczynski
+(c) 2011 Nick Zarczynski
+(c) 2013 Pierre Talbot
 
 For most code you should import this as: 
 from scheme_eval import scheme_eval
