@@ -7,6 +7,7 @@ For most code you should import this as:
 from scheme_eval import scheme_eval
 """
 
+from cps_util import cps_foldl
 from scheme_types import Symbol, Pair, Primitive, the_empty_list, The_Empty_List, Procedure
 from buffered_input import Buff
 from scheme_read import scheme_read
@@ -68,14 +69,18 @@ def scheme_eval(expr, env, cont):
   else:
     cont("scheme_eval: not implemented")
 
+def make_append_arg(env):
+  def append_arg(accu, arg, cont):
+    scheme_eval(arg, env, 
+      lambda arg_eval: cont(accu.append(arg_eval)))
+  return append_arg
+
+def make_args_list(args, env, cont):
+  cps_foldl(make_append_arg(env), cont, [], args)
+
 def primitive_apply(fn, args, env, cont):
-  if(isinstance(args, The_Empty_List)):
-    cont(fn)
-  else:
-    scheme_eval(args.car, env, 
-      lambda arg:
-        primitive_apply(fn(arg), args.cdr, env, cont)
-    )
+  make_args_list(args, env, lambda args:
+    cont(fn(*args))) # unpack arguments.
 
 def scheme_apply(proc, args, env, cont):
   if type(proc) is Primitive:

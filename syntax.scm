@@ -23,7 +23,7 @@ def f(expr, env, cont):
   cont(Procedure(expr.car, expr.cdr, env))
 ")
 
-(define-primitive + "lambda x: lambda y: x+y")
-(define-primitive * "lambda x: lambda y: x*y")
-(define-primitive / "lambda x: lambda y: x/y")
-(define-primitive - "lambda x: lambda y: x-y")
+(define-primitive + "lambda x, y: x+y")
+(define-primitive * "lambda x, y: x*y")
+(define-primitive / "lambda x, y: x/y")
+(define-primitive - "lambda x, y: x-y")
