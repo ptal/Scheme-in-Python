@@ -7,7 +7,7 @@ For most code you should import this as:
 from scheme_eval import scheme_eval
 """
 
-from cps_util import cps_foldl
+from cps_functional import cps_foldl
 from scheme_types import Symbol, Pair, Primitive, the_empty_list, The_Empty_List, Procedure
 from buffered_input import Buff
 from scheme_read import scheme_read
