@@ -69,25 +69,41 @@ def scheme_eval(expr, env, cont):
   else:
     cont("scheme_eval: not implemented")
 
+def append_and_return (accu, e):
+  accu.append(e)
+  return accu
+
 def make_append_arg(env):
   def append_arg(accu, arg, cont):
     scheme_eval(arg, env, 
-      lambda arg_eval: cont(accu.append(arg_eval)))
+      lambda arg_eval: cont(append_and_return(accu, arg_eval)))
   return append_arg
 
 def make_args_list(args, env, cont):
   cps_foldl(make_append_arg(env), cont, [], args)
 
 def primitive_apply(fn, args, env, cont):
-  make_args_list(args, env, lambda args:
-    cont(fn(*args))) # unpack arguments.
+  make_args_list(args, env, 
+    lambda args: cont(fn(*args))) # unpack arguments.
+
+def eval_sequence(seq, env, cont):
+  def eval_instruction(accu, arg, k):
+    scheme_eval(arg, env,
+      lambda arg_eval: k(arg_eval))
+  cps_foldl(eval_instruction, cont, None, seq)
+
+def procedure_apply(proc, params, env, cont):
+  make_args_list(params, env,
+    lambda args:
+      eval_sequence(proc.body, 
+        extend_environment(dict(zip(proc.parameters, args)), proc.environment), 
+        cont))
 
 def scheme_apply(proc, args, env, cont):
   if type(proc) is Primitive:
     primitive_apply(proc.fn, args, env, cont)
-  # elif type(proc) is Procedure:
-    # new_env = extend_environment(dict(zip(proc.parameters, args)), proc.environment)
-    # return [scheme_eval(e,new_env) for e in proc.body][-1]
+  elif type(proc) is Procedure:
+    procedure_apply(proc, args, env, cont)
   else:
     cont("Error: Undefined procedure")
 

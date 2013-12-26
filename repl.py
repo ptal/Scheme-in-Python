@@ -20,7 +20,7 @@ def print_eval_result(inp):
   else:
     print ''
 
-special_forms['load'](Pair("syntax.scm", None), global_environment, print_eval_result)
+special_forms['load'](Pair("syntax.scm", None), global_environment, lambda x: x)
 
 while True:
   print '> ',
