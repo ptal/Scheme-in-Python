@@ -23,6 +23,13 @@ def f(expr, env, cont):
   cont(Procedure(expr.car, expr.cdr, env))
 ")
 
+(scheme-syntax call/cc "
+def f(expr, env, cont):
+  scheme_eval(expr, env, 
+    lambda y:
+      callcc_apply(y, env, cont))
+")
+
 (define-primitive + "lambda x, y: x+y")
 (define-primitive * "lambda x, y: x*y")
 (define-primitive / "lambda x, y: x/y")

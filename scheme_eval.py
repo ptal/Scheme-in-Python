@@ -87,9 +87,9 @@ def primitive_apply(fn, args, env, cont):
     lambda args: cont(fn(*args))) # unpack arguments.
 
 def eval_sequence(seq, env, cont):
-  def eval_instruction(accu, arg, k):
-    scheme_eval(arg, env,
-      lambda arg_eval: k(arg_eval))
+  def eval_instruction(accu, instruct, k):
+    scheme_eval(instruct, env,
+      lambda inst_eval: k(inst_eval))
   cps_foldl(eval_instruction, cont, None, seq)
 
 def procedure_apply(proc, params, env, cont):
@@ -98,6 +98,14 @@ def procedure_apply(proc, params, env, cont):
       eval_sequence(proc.body, 
         extend_environment(dict(zip(proc.parameters, args)), proc.environment), 
         cont))
+
+def callcc_apply(proc, env, cont):
+  if type(proc) is Procedure and len(list(proc.parameters)) == 1:
+    eval_sequence(proc.body,
+      extend_environment(dict({proc.parameters.car: Primitive(cont)}), proc.environment),
+      lambda x: None)
+  else:
+    cont("call/cc only takes a procedure of arity 1.")
 
 def scheme_apply(proc, args, env, cont):
   if type(proc) is Primitive:
