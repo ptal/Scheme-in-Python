@@ -23,6 +23,12 @@ def f(expr, env, cont):
   cont(Procedure(expr.car, expr.cdr, env))
 ")
 
+(scheme-syntax set! "
+def f(expr, env, cont):
+  scheme_eval(expr.cdr.car, env, lambda x:
+    lookup_and_set_symbol(expr.car, x, env))
+")
+
 (scheme-syntax call/cc "
 def f(expr, env, cont):
   scheme_eval(expr, env, 

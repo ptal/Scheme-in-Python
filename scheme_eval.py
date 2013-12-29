@@ -35,6 +35,18 @@ def set_symbol(symbol, val, env):
   """Set the binding (symbol, val) in the current frame of env"""
   current_environment(env)[symbol] = val
 
+def lookup_and_set_symbol(symbol, val, environment):  
+  """Set the binding (symbol, val) in the environment, the symbol must
+     be defined first."""
+  env = environment
+  while env != the_empty_list:
+    if symbol in current_environment(env):
+      set_symbol(symbol, val, env)
+      return current_environment(env)[symbol]
+    else:
+      env = enclosing_environment(env)
+  return "Error: Unbound symbol: " + symbol
+
 def lookup_symbol_value(symbol, environment):
   """Return the value of symbol or Unbound Symbol error"""
   env = environment
