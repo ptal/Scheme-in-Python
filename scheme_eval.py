@@ -15,7 +15,7 @@ from scheme_read import scheme_read
 # Error continuation
 
 def error(msg):
-  print msg
+  print "Error: ", msg
 
 ##############################################################################
 ## Environments
@@ -47,21 +47,21 @@ def lookup_and_set_symbol(symbol, val, environment, cont):
   env = environment
   while env != the_empty_list:
     if symbol in current_environment(env):
-      set_symbol(symbol, val, env)
-      cont(current_environment(env)[symbol])
+      return set_symbol(symbol, val, env, lambda x:
+        cont(val))
     else:
       env = enclosing_environment(env)
-  error("Error: Unbound symbol: " + symbol)
+  error("Unbound symbol: " + symbol)
 
 def lookup_symbol_value(symbol, environment, cont):
   """Return the value of symbol or Unbound Symbol error"""
   env = environment
   while env != the_empty_list:
     if symbol in current_environment(env):
-      cont(current_environment(env)[symbol])
+      return cont(current_environment(env)[symbol])
     else:
       env = enclosing_environment(env)
-  error("Error: Unbound symbol: " + symbol)
+  error("Unbound symbol: " + symbol)
 
 ##############################################################################
 ## Eval and Apply
@@ -131,7 +131,7 @@ def scheme_apply(proc, args, env, cont):
   elif type(proc) is Procedure:
     procedure_apply(proc, args, env, cont)
   else:
-    error("Error: Undefined procedure")
+    error("Undefined procedure")
 
 ##############################################################################
 ## Builtin Syntax
@@ -151,6 +151,7 @@ def load(expr, env, cont):
     scheme_eval(scheme_read(b), env, cont)
     b.remove_whitespace()
   f.close()
+  cont(None)
 
 special_forms['scheme-syntax'] = special_form_handler
 special_forms['load'] = load
