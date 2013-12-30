@@ -28,6 +28,11 @@ def f(expr, env, cont):
     lookup_and_set_symbol(expr.car, x, env, cont))
 ")
 
+(scheme-syntax exit "
+def f(expr, env, cont):
+  sys.exit(0)
+")
+
 (scheme-syntax call/cc "
 def f(expr, env, cont):
   scheme_eval(expr, env, 

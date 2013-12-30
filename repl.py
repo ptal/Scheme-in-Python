@@ -24,4 +24,8 @@ special_forms['load'](Pair("syntax.scm", None), global_environment, lambda x: x)
 
 while True:
   print '> ',
-  scheme_eval(scheme_read(Buff(sys.stdin)), global_environment, print_eval_result)
+  try:
+    scheme_eval(scheme_read(Buff(sys.stdin)), global_environment, print_eval_result)
+  except Exception as e:
+    print 'Error: Unsupported or invalid syntax.'
+    print e
