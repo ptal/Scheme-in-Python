@@ -49,8 +49,7 @@ def lookup_and_set_symbol(symbol, val, environment, cont):
   env = environment
   while env != the_empty_list:
     if symbol in current_environment(env):
-      return set_symbol(symbol, val, env, lambda x:
-        cont(val))
+      return set_symbol(symbol, val, env, cont)
     else:
       env = enclosing_environment(env)
   error("Unbound symbol: " + symbol)
