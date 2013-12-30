@@ -12,6 +12,8 @@ class The_Empty_List():
   """The empty list is used as a list terminator and should be a singleton"""
   def __repr__(self):
     return "()"
+  def __iter__(self):
+    return [].__iter__()
 
 the_empty_list = The_Empty_List()
 

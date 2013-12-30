@@ -10,7 +10,7 @@ from scheme_eval import scheme_eval
 import sys
 
 from cps_functional import cps_foldl
-from scheme_types import Symbol, Pair, Primitive, the_empty_list, The_Empty_List, Procedure
+from scheme_types import Symbol, Pair, Primitive, the_empty_list, Procedure
 from buffered_input import Buff
 from scheme_read import scheme_read
 
