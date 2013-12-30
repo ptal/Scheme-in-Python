@@ -36,28 +36,29 @@ def extend_environment(bindings, base_environment):
 global_environment = extend_environment({}, the_empty_list)
 special_forms = {}
 
-def set_symbol(symbol, val, env):
+def set_symbol(symbol, val, env, cont):
   """Set the binding (symbol, val) in the current frame of env"""
   current_environment(env)[symbol] = val
+  cont(None)
 
-def lookup_and_set_symbol(symbol, val, environment):  
+def lookup_and_set_symbol(symbol, val, environment, cont):  
   """Set the binding (symbol, val) in the environment, the symbol must
      be defined first."""
   env = environment
   while env != the_empty_list:
     if symbol in current_environment(env):
       set_symbol(symbol, val, env)
-      return current_environment(env)[symbol]
+      cont(current_environment(env)[symbol])
     else:
       env = enclosing_environment(env)
   error("Error: Unbound symbol: " + symbol)
 
-def lookup_symbol_value(symbol, environment):
+def lookup_symbol_value(symbol, environment, cont):
   """Return the value of symbol or Unbound Symbol error"""
   env = environment
   while env != the_empty_list:
     if symbol in current_environment(env):
-      return current_environment(env)[symbol]
+      cont(current_environment(env)[symbol])
     else:
       env = enclosing_environment(env)
   error("Error: Unbound symbol: " + symbol)
@@ -74,7 +75,7 @@ def scheme_eval(expr, env, cont):
   if self_evaluating(expr):
     cont(expr)
   elif type(expr) is Symbol:
-    cont(lookup_symbol_value(expr, env))
+    lookup_symbol_value(expr, env, cont)
   elif type(expr) is Pair:
     if expr.car in special_forms:
       special_forms[expr.car](expr.cdr, env, cont)
