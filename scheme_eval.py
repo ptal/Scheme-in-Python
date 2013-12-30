@@ -12,6 +12,11 @@ from scheme_types import Symbol, Pair, Primitive, the_empty_list, The_Empty_List
 from buffered_input import Buff
 from scheme_read import scheme_read
 
+# Error continuation
+
+def error(msg):
+  print msg
+
 ##############################################################################
 ## Environments
 ##############################################################################
@@ -45,7 +50,7 @@ def lookup_and_set_symbol(symbol, val, environment):
       return current_environment(env)[symbol]
     else:
       env = enclosing_environment(env)
-  return "Error: Unbound symbol: " + symbol
+  error("Error: Unbound symbol: " + symbol)
 
 def lookup_symbol_value(symbol, environment):
   """Return the value of symbol or Unbound Symbol error"""
@@ -55,7 +60,7 @@ def lookup_symbol_value(symbol, environment):
       return current_environment(env)[symbol]
     else:
       env = enclosing_environment(env)
-  return "Error: Unbound symbol: " + symbol
+  error("Error: Unbound symbol: " + symbol)
 
 ##############################################################################
 ## Eval and Apply
@@ -79,7 +84,7 @@ def scheme_eval(expr, env, cont):
           scheme_apply(x, expr.cdr, env, cont)
       )
   else:
-    cont("scheme_eval: not implemented")
+    error("scheme_eval: not implemented")
 
 def append_and_return (accu, e):
   accu.append(e)
@@ -117,7 +122,7 @@ def callcc_apply(proc, env, cont):
       extend_environment(dict({proc.parameters.car: Primitive(cont)}), proc.environment),
       lambda x: None)
   else:
-    cont("call/cc only takes a procedure of arity 1.")
+    error("call/cc only takes a procedure of arity 1.")
 
 def scheme_apply(proc, args, env, cont):
   if type(proc) is Primitive:
@@ -125,7 +130,7 @@ def scheme_apply(proc, args, env, cont):
   elif type(proc) is Procedure:
     procedure_apply(proc, args, env, cont)
   else:
-    cont("Error: Undefined procedure")
+    error("Error: Undefined procedure")
 
 ##############################################################################
 ## Builtin Syntax
