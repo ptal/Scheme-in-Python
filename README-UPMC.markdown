@@ -13,8 +13,8 @@ What's done?
 
 * Arithmetic primitives (+, -, /, *).
 * set! instruction.
-*! Interpreter in CPS.
-*! call/cc instruction.
+* /!\ Interpreter in CPS.
+* /!\ call/cc instruction.
 * exit instruction.
 * A generic and re-usable CPS fold-left function (see cps_functional.py).
 
