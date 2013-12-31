@@ -35,7 +35,7 @@ def f(expr, env, cont):
 
 (scheme-syntax call/cc "
 def f(expr, env, cont):
-  scheme_eval(expr, env, 
+  scheme_eval(expr.car, env, 
     lambda y:
       callcc_apply(y, env, cont))
 ")

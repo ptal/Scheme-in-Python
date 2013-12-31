@@ -12,46 +12,48 @@ This series will focus on building a very simple interpreter for the purpose of 
 
 With that out of the way, here's an example session:
 
-    /code/Scheme in Python$ python scheme.py
-    > 42
-    42
-    > -.42
-    -0.42
-    > 4/2
-    rationals not implemented
-    > #t
-    True
-    > #f
-    False
-    > #\a
-    a
-    > #\space
-    
-    > hello
-    Error: Unbound symbol: hello
-    > (define hello "world")
+    $ python repl.py
+    > (set! two 3)
+     Error:  Unbound symbol: two
+    > (define two 2)
+     
+    > (define two (+ 1 2))
+     
+    > two
+     ;===> 3
+    > (set! two 2)
+     
+    > two
+     ;===> 2
+    > (define add5 (lambda (v) (+ 5 v)))
 
-    > hello
-    world
-    > (if #t 1 0)
-    1
-    > (if #f 1 0)
-    0
-    > (+ 3 4)
-    7
-    > ((fn (x) x) 42)
-    42
-    > (define echo (fn (x) x))
+    > (add5 6)
+     ;===> 11
+    > (define add (lambda (u v) (+ u v)))
+     
+    > (add (* 4 3) (/ 4 2))
+     ;===> 14
+    > (call/cc (lambda (k) (k 5)))
+     ;===> 5
+    > (- (call/cc (lambda (k) (k two))) 3)
+     ;===> -1
+    > (call/cc (lambda (k v) (k (+ 5 v))))
+     Error:  call/cc only takes a procedure of arity 1.
+    > (define inc (lambda () (define j 0) (set! j (+ j 1)) j))
+     
+    > (inc)
+     ;===> 1
+    > (inc)
+     ;===> 1
+    > (exit)
 
-    > (echo 42)
-    42
-    > (define add (fn (x y) (+ x y)))
-
-    > (add 3 4)
-    7
-
+    $ 
 
 
-(c)2011 Nick Zarczynski
+(c) 2011 Nick Zarczynski
+
+The initial project (v.10) has been extended by Pierre Talbot and passed the interpreter in Continuation Passing Style (CPS). He also adds the call/cc operation.
+
+(c) 2013 Pierre Talbot
 
 License: BSD
