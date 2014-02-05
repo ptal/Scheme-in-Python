@@ -17,8 +17,6 @@ from buffered_input import Buff
 def print_eval_result(inp):
   if inp != None:
     print ';===>', inp
-  else:
-    print ''
 
 special_forms['load'](Pair("syntax.scm", None), global_environment, lambda x: x)
 

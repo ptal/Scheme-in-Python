@@ -76,7 +76,10 @@ def scheme_eval(expr, env, cont):
   if self_evaluating(expr):
     cont(expr)
   elif type(expr) is Symbol:
-    lookup_symbol_value(expr, env, cont)
+    if(expr == "call/cc"):
+      cont(Procedure(Pair("k", the_empty_list), Pair(Symbol("k"), the_empty_list), env))
+    else:
+      lookup_symbol_value(expr, env, cont)
   elif type(expr) is Pair:
     if expr.car in special_forms:
       special_forms[expr.car](expr.cdr, env, cont)

@@ -45,6 +45,8 @@ With that out of the way, here's an example session:
      ;===> 1
     > (inc)
      ;===> 1
+    > (call/cc call/cc)
+    >
     > (exit)
 
     $ 
